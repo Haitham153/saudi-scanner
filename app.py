@@ -10,7 +10,7 @@ from ta.volatility import AverageTrueRange, BollingerBands, KeltnerChannel
 
 # إعدادات الواجهة
 st.set_page_config(page_title="مساعد المضاربة الآلي", page_icon="🤖", layout="wide")
-st.title("🤖 رادار السوق السعودي الشامل (V5.0)")
+st.title("🤖 رادار السوق السعودي الشامل (V8.0 - القائمة الكاملة)")
 
 # إعدادات التيليجرام
 st.sidebar.header("⚙️ إعدادات التيليجرام")
@@ -21,32 +21,25 @@ tele_chat = st.sidebar.text_input("Chat ID")
 TRADES_FILE = "active_trades.csv"
 HISTORY_FILE = "trade_history.csv"
 
-# قائمة موسعة تضم أغلب أسهم السوق السعودي النشطة
+# القائمة الكاملة لأسهم السوق السعودي (مقدمة من المستخدم)
 tickers = [
-    '2222.SR', '1180.SR', '1211.SR', '7204.SR', '1120.SR', '1010.SR', '2010.SR', '4001.SR',
-    '1020.SR', '1030.SR', '1040.SR', '1050.SR', '1060.SR', '1070.SR', '1080.SR', '1090.SR',
-    '1100.SR', '1110.SR', '1150.SR', '1170.SR', '1182.SR', '1183.SR', '1202.SR', '1203.SR',
-    '1220.SR', '1222.SR', '1223.SR', '1224.SR', '1230.SR', '1240.SR', '1250.SR', '1260.SR',
-    '1301.SR', '1302.SR', '1303.SR', '1304.SR', '1320.SR', '1322.SR', '1323.SR', '1324.SR',
-    '1325.SR', '1326.SR', '1327.SR', '1328.SR', '1329.SR', '1330.SR', '1331.SR', '1332.SR',
-    '2001.SR', '2002.SR', '2003.SR', '2004.SR', '2005.SR', '2006.SR', '2007.SR', '2008.SR',
-    '2009.SR', '2011.SR', '2012.SR', '2013.SR', '2014.SR', '2015.SR', '2016.SR', '2017.SR',
-    '2018.SR', '2019.SR', '2020.SR', '2021.SR', '2022.SR', '2023.SR', '2024.SR', '2025.SR',
-    '2026.SR', '2027.SR', '2028.SR', '2029.SR', '2030.SR', '2040.SR', '2050.SR', '2060.SR',
-    '2070.SR', '2080.SR', '2090.SR', '2100.SR', '2110.SR', '2120.SR', '2130.SR', '2140.SR',
-    '2150.SR', '2160.SR', '2170.SR', '2180.SR', '2190.SR', '2200.SR', '2210.SR', '2220.SR',
-    '2230.SR', '2240.SR', '2250.SR', '2260.SR', '2270.SR', '2280.SR', '2290.SR', '2300.SR',
-    '2310.SR', '2320.SR', '2330.SR', '2340.SR', '2350.SR', '2360.SR', '2370.SR', '2380.SR',
-    '2390.SR', '2400.SR', '2410.SR', '2420.SR', '2430.SR', '2440.SR', '2450.SR', '2460.SR',
-    '3001.SR', '3002.SR', '3003.SR', '3004.SR', '3005.SR', '3006.SR', '3007.SR', '3008.SR',
-    '3010.SR', '3020.SR', '3030.SR', '3040.SR', '3050.SR', '3060.SR', '3070.SR', '3080.SR',
-    '4020.SR', '4030.SR', '4040.SR', '4050.SR', '4060.SR', '4070.SR', '4080.SR', '4090.SR',
-    '4100.SR', '4110.SR', '4120.SR', '4130.SR', '4140.SR', '4150.SR', '4160.SR', '4170.SR',
-    '4180.SR', '4190.SR', '4200.SR', '4210.SR', '4220.SR', '4230.SR', '4240.SR', '4250.SR',
-    '4260.SR', '4270.SR', '4280.SR', '4290.SR', '4300.SR', '6002.SR', '6003.SR', '6004.SR',
-    '6010.SR', '6012.SR', '6014.SR', '6020.SR', '6030.SR', '6040.SR', '6050.SR', '6060.SR',
-    '6070.SR', '6080.SR', '6090.SR', '6100.SR', '7001.SR', '7002.SR', '7003.SR', '7004.SR',
-    '7006.SR', '7007.SR', '7008.SR', '7009.SR', '7010.SR'
+    '1010.SR', '1020.SR', '1030.SR', '1050.SR', '1060.SR', '1080.SR', '1111.SR', '1120.SR', '1140.SR', '1150.SR', '1180.SR', '1182.SR', '1183.SR',
+    '1201.SR', '1202.SR', '1210.SR', '1211.SR', '1212.SR', '1213.SR', '1214.SR',
+    '1301.SR', '1302.SR', '1303.SR', '1304.SR', '1320.SR',
+    '1810.SR', '1820.SR', '1830.SR', '1831.SR', '1832.SR', '1833.SR', '1834.SR',
+    '2001.SR', '2002.SR', '2010.SR', '2020.SR', '2030.SR', '2040.SR', '2050.SR', '2060.SR', '2070.SR', '2080.SR', '2081.SR', '2082.SR', '2083.SR', '2090.SR',
+    '2100.SR', '2110.SR', '2120.SR', '2130.SR', '2140.SR', '2150.SR', '2160.SR', '2170.SR', '2180.SR', '2190.SR', '2200.SR', '2210.SR', '2220.SR', '2222.SR', '2223.SR', '2230.SR', '2240.SR', '2250.SR', '2270.SR', '2280.SR', '2281.SR', '2282.SR', '2283.SR', '2284.SR', '2285.SR', '2290.SR',
+    '2300.SR', '2310.SR', '2320.SR', '2330.SR', '2340.SR', '2350.SR', '2360.SR', '2370.SR', '2380.SR', '2381.SR', '2382.SR',
+    '3001.SR', '3002.SR', '3003.SR', '3004.SR', '3005.SR', '3010.SR', '3020.SR', '3030.SR', '3040.SR', '3050.SR', '3060.SR', '3080.SR', '3090.SR',
+    '4001.SR', '4002.SR', '4003.SR', '4004.SR', '4005.SR', '4006.SR', '4007.SR', '4009.SR', '4010.SR', '4011.SR', '4012.SR', '4013.SR', '4014.SR', '4015.SR',
+    '4020.SR', '4030.SR', '4031.SR', '4040.SR', '4050.SR', '4061.SR', '4070.SR', '4080.SR', '4090.SR',
+    '4100.SR', '4110.SR', '4130.SR', '4140.SR', '4150.SR', '4160.SR', '4161.SR', '4162.SR', '4163.SR', '4164.SR', '4170.SR', '4180.SR', '4190.SR', '4191.SR', '4192.SR',
+    '4200.SR', '4210.SR', '4220.SR', '4230.SR', '4240.SR', '4250.SR', '4260.SR', '4270.SR', '4280.SR', '4290.SR', '4291.SR', '4292.SR',
+    '4300.SR', '4310.SR', '4320.SR', '4321.SR', '4322.SR', '4323.SR',
+    '5110.SR',
+    '6001.SR', '6002.SR', '6004.SR', '6010.SR', '6012.SR', '6013.SR', '6014.SR', '6015.SR',
+    '7010.SR', '7200.SR', '7201.SR', '7202.SR', '7203.SR', '7210.SR', '7220.SR', '7221.SR', '7230.SR', '7231.SR', '7232.SR',
+    '8010.SR', '8020.SR', '8030.SR', '8040.SR', '8050.SR', '8060.SR', '8070.SR', '8100.SR', '8120.SR', '8150.SR', '8160.SR', '8170.SR', '8180.SR', '8190.SR', '8200.SR', '8210.SR', '8230.SR', '8240.SR', '8250.SR', '8260.SR', '8270.SR', '8280.SR', '8300.SR', '8310.SR', '8311.SR', '8312.SR'
 ]
 
 def send_telegram(msg):
@@ -84,11 +77,11 @@ def show_dashboard():
 def scan_market():
     st.subheader(f"1. مسح السوق ({len(tickers)} سهم)")
     trades = load_data(TRADES_FILE)
-    if st.button("🔍 ابدأ مسح شامل للسوق الآن", use_container_width=True, type="primary"):
-        with st.spinner(f"جاري فحص {len(tickers)} سهم... قد يستغرق هذا دقيقتين. يرجى الانتظار."):
+    if st.button("🔍 ابدأ المسح الشامل للسوق الآن", use_container_width=True, type="primary"):
+        with st.spinner(f"جاري فحص {len(tickers)} سهم... قد يستغرق هذا 3 إلى 5 دقائق. يرجى عدم إغلاق الصفحة."):
             for ticker in tickers:
                 try:
-                    data = yf.download(ticker, period="1y", interval="1d", progress=False)
+                    data = yf.download(ticker, period="1y", interval="1d", progress=False, threads=False)
                     if data.empty: continue
                     
                     data['EMA10'] = EMAIndicator(data['Close'], window=10).ema_indicator()
@@ -129,7 +122,7 @@ def scan_market():
                             st.success(f"🎯 تم العثور على فرقة لـ {ticker.replace('.SR','')} وتم الدخول!")
                 except Exception as e:
                     pass
-        st.success("✅ اكتمل المسح الشامل للسوق.")
+        st.success("✅ اكتمل المسح الشامل لجميع أسهم السوق السعودي.")
 
 def monitor_trades():
     st.subheader("2. مراقبة الصفقات المفتوحة")
@@ -144,7 +137,7 @@ def monitor_trades():
             for i, trade in trades.iterrows():
                 ticker = trade['Ticker']
                 try:
-                    live_data = yf.download(ticker, period="1d", interval="1m", progress=False)
+                    live_data = yf.download(ticker, period="1d", interval="1m", progress=False, threads=False)
                     if live_data.empty: continue
                     current_price = live_data['Close'].iloc[-1]
                     entry_date = datetime.strptime(trade['Date'], '%Y/%m/%d')
