@@ -3,6 +3,7 @@ import yfinance as yf
 import pandas as pd
 import requests
 import os
+import time  # أضفنا هذه المكتبة لإبطاء سرعة الطلبات
 from datetime import datetime
 from ta.trend import EMAIndicator
 from ta.momentum import RSIIndicator
@@ -10,7 +11,7 @@ from ta.volatility import AverageTrueRange, BollingerBands, KeltnerChannel
 
 # إعدادات الواجهة
 st.set_page_config(page_title="مساعد المضاربة الآلي", page_icon="🤖", layout="wide")
-st.title("🤖 رادار السوق السعودي الشامل (V8.0 - القائمة الكاملة)")
+st.title("🤖 رادار السوق السعودي الشامل (V9.0 - حماية من الحظر)")
 
 # إعدادات التيليجرام
 st.sidebar.header("⚙️ إعدادات التيليجرام")
@@ -21,7 +22,7 @@ tele_chat = st.sidebar.text_input("Chat ID")
 TRADES_FILE = "active_trades.csv"
 HISTORY_FILE = "trade_history.csv"
 
-# القائمة الكاملة لأسهم السوق السعودي (مقدمة من المستخدم)
+# القائمة الكاملة لأسهم السوق السعودي
 tickers = [
     '1010.SR', '1020.SR', '1030.SR', '1050.SR', '1060.SR', '1080.SR', '1111.SR', '1120.SR', '1140.SR', '1150.SR', '1180.SR', '1182.SR', '1183.SR',
     '1201.SR', '1202.SR', '1210.SR', '1211.SR', '1212.SR', '1213.SR', '1214.SR',
@@ -78,7 +79,7 @@ def scan_market():
     st.subheader(f"1. مسح السوق ({len(tickers)} سهم)")
     trades = load_data(TRADES_FILE)
     if st.button("🔍 ابدأ المسح الشامل للسوق الآن", use_container_width=True, type="primary"):
-        with st.spinner(f"جاري فحص {len(tickers)} سهم... قد يستغرق هذا 3 إلى 5 دقائق. يرجى عدم إغلاق الصفحة."):
+        with st.spinner(f"جاري فحص {len(tickers)} سهم... (تم إبطاء السرعة لتجنب الحظر، قد يستغرق 5 دقائق)"):
             for ticker in tickers:
                 try:
                     data = yf.download(ticker, period="1y", interval="1d", progress=False, threads=False)
@@ -120,6 +121,10 @@ def scan_market():
                             msg = f"🚀 *إشارة دخول (شراء)*\n🏢 السهم: {ticker.replace('.SR','')}\n💰 الدخول: {entry:.2f}\n🛑 الوقف: {sl:.2f}\n🎯 الهدف: {tp:.2f}"
                             send_telegram(msg)
                             st.success(f"🎯 تم العثور على فرقة لـ {ticker.replace('.SR','')} وتم الدخول!")
+                            
+                    # الأخطر المهم: إيقاف الأداة لمدة نصف ثانية بعد كل سهم لمنع الحظر
+                    time.sleep(0.5) 
+                    
                 except Exception as e:
                     pass
         st.success("✅ اكتمل المسح الشامل لجميع أسهم السوق السعودي.")
